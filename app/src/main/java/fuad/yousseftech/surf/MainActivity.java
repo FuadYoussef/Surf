@@ -63,16 +63,9 @@ public class MainActivity extends AppCompatActivity
                 //Log.i("currentUrl", currentUrl);
                 mAdapter.setWeb(currentId);
 
-                HashMap<String, Object> webs = (HashMap) dataSnapshot.child("webs").getValue();
-                for(String key: webs.keySet()) {
-                    Object val = webs.get(key);
-                    webMap.put(key, new Web(val));
-                }
-                mAdapter.setWebMap(webMap);
                 currentLinkView = (TextView) findViewById(R.id.currentLinkContent);
                 Web currentWeb = webMap.get(currentId);
                 currentLinkView.setText(currentWeb.getTitle());
-                //currentWeb.getLink();
 
                 mAdapter.notifyDataSetChanged();
             }
@@ -83,13 +76,23 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        final DatabaseReference rref = ref.child("webs");
+        rref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HashMap<String, Object> webs = (HashMap) dataSnapshot.getValue();
+                for(String key: webs.keySet()) {
+                    Object val = webs.get(key);
+                    webMap.put(key, new Web(val));
+                }
+                mAdapter.setWebMap(webMap);
+            }
 
-        /*myLinks.add("http://www.google.com");
-        myLinks.add("https://www.youtube.com/channel/UC4D2LtazNIrhIPJKLs8KqUA");
-        myLinks.add("http://www.facebook.com/parkjs814");
-        myLinks.add("https://www.instagram.com/magnumphotos");
-        myLinks.add("https://github.com/orgs/surf-plugin");*/
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.link_recycler_view);
@@ -103,8 +106,6 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(layoutManager);
 
         mAdapter = new LinkAdapter();
-        //mAdapter.setWebMap(webMap);
-        //mAdapter.setWeb("6PJ98KMQ");
         recyclerView.setAdapter(mAdapter);
         setSupportActionBar(toolbar);
 
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        //mAdapter.setLinkList(myLinks);
+        mAdapter.notifyDataSetChanged();
 
         mAdapter.setOnLinkClickListener(new LinkAdapter.OnLinkClickListener() {
             @Override
