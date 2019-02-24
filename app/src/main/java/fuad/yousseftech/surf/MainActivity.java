@@ -2,10 +2,12 @@ package fuad.yousseftech.surf;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,7 +18,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -26,10 +37,42 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView.LayoutManager layoutManager;
 
     List<String> myLinks = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference();
+        //myLinks.add(ref.getKey());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //Log.i("db", dataSnapshot.toString());
+                for(DataSnapshot data: dataSnapshot.getChildren()) {
+                    //Log.i("db", data.toString());
+                    String encodedLink = data.getKey();
+                    //Log.i("db", encodedLink);
+
+
+                    byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedLink);
+                    String link = new String(decodedBytes, StandardCharsets.UTF_8);
+                    //Log.i("db", link);
+                    myLinks.add(link);
+                    mAdapter.notifyDataSetChanged();
+                    //String num = datas.child("1").getValue().toString();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //Log.i("db", ref.child().toString());
+
         myLinks.add("http://www.google.com");
         myLinks.add("https://www.youtube.com/channel/UC4D2LtazNIrhIPJKLs8KqUA");
         myLinks.add("http://www.facebook.com/parkjs814");
