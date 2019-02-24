@@ -1,4 +1,5 @@
-package fuad.yousseftech.surf;
+package fuad.yousseftech.surf.Firebase;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -8,37 +9,56 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class UrlMap {
-    private Map<String, String> map;
-    public static Map<String, Bitmap> bitmapMap = new HashMap<>();
+public class Web {
+    private Map<String, String> info;
+    private List<Rank> ranks;
+    private static Map<String, Bitmap> bitmapMap = new HashMap<>();
 
-    public UrlMap(Map<String, String> map) {
-        this.map = map;
+    public Web(Object data) {
+        info = new HashMap<>();
+        ranks = new ArrayList<>();
+
+        HashMap<String, Object> details = (HashMap) data;
+        for(String key: details.keySet()) {
+            Object value = details.get(key);
+            if (value instanceof String) {
+                info.put(key, (String) value);
+            } else if (value instanceof List) {
+                List<Object> list = (List) value;
+                for(Object rank: list) {
+                    ranks.add(new Rank(rank));
+                }
+            } else {
+                Log.e("db", value.toString());
+            }
+        }
+    }
+
+    public List<Rank> getRanks() {
+        return ranks;
     }
 
     public String getLink() {
-        return map.get("url");
+        return info.get("url");
     }
 
     public String getTitle() {
-        return map.get("title");
+        return info.get("title");
     }
 
     public String getDescription() {
-        return map.get("description");
+        return info.get("description");
     }
 
     public String getfavicon() {
-        String link = map.get("favicon");
+        String link = info.get("favicon");
         return link.replaceFirst("http://", "https://");
-    }
-
-    public void setMap(Map<String, String> map) {
-        this.map = map;
     }
 
     private static class DownloadBitmapTask extends AsyncTask<String, Void, Bitmap> {
@@ -78,5 +98,4 @@ public class UrlMap {
         String link = getfavicon();
         return new DownloadBitmapTask().execute(link).get();
     }
-
 }

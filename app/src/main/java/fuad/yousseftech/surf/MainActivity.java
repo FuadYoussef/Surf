@@ -32,22 +32,57 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fuad.yousseftech.surf.Firebase.Web;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private RecyclerView recyclerView;
     private LinkAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    private Map<String, Web> webMap = new HashMap<>();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        final DatabaseReference ref = db.getReference();
+        //websRef = ref.child("webs");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String currentId = (String) dataSnapshot.child("currentId").getValue();
+                String currentUrl = (String) dataSnapshot.child("currentUrl").getValue();
+                //Log.i("currentId", currentId);
+                //Log.i("currentUrl", currentUrl);
+                mAdapter.setWeb(currentId);
+
+                HashMap<String, Object> webs = (HashMap) dataSnapshot.child("webs").getValue();
+                for(String key: webs.keySet()) {
+                    Object val = webs.get(key);
+                    webMap.put(key, new Web(val));
+                }
+                mAdapter.setWebMap(webMap);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         /*myLinks.add("http://www.google.com");
         myLinks.add("https://www.youtube.com/channel/UC4D2LtazNIrhIPJKLs8KqUA");
         myLinks.add("http://www.facebook.com/parkjs814");
         myLinks.add("https://www.instagram.com/magnumphotos");
         myLinks.add("https://github.com/orgs/surf-plugin");*/
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.link_recycler_view);
@@ -59,40 +94,11 @@ public class MainActivity extends AppCompatActivity
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        // specify an adapter (see also next example)
         mAdapter = new LinkAdapter();
-        final List<UrlMap> urlMapList = mAdapter.getList();
+        //mAdapter.setWebMap(webMap);
+        //mAdapter.setWeb("6PJ98KMQ");
         recyclerView.setAdapter(mAdapter);
         setSupportActionBar(toolbar);
-
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference();
-        //myLinks.add(ref.getKey());
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data: dataSnapshot.getChildren()) {
-                    String encodedKey = data.getKey();
-                    int key = Integer.parseInt(encodedKey);
-                    //byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedLink);
-                    //String link = new String(decodedBytes, StandardCharsets.UTF_8);
-                    //Log.i("db", link);
-
-                    Map<String, String> map = (HashMap<String, String>) data.getValue();
-                    if(key >= urlMapList.size())
-                        urlMapList.add(new UrlMap(map));
-                    else
-                        urlMapList.get(key).setMap(map);
-                    mAdapter.notifyDataSetChanged();
-                    //String num = datas.child("1").getValue().toString();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -112,7 +118,7 @@ public class MainActivity extends AppCompatActivity
         mAdapter.setOnLinkClickListener(new LinkAdapter.OnLinkClickListener() {
             @Override
             public void onLinkClicked(String link) {
-                System.out.println("Clicked link: " + link);
+                //System.out.println("Clicked link: " + link);
                 //Intent intent = new Intent(ViewAllStudentsActivity.this, EditStudentActivity.class);
                 //intent.putExtra(STUDENT_DATA, student);
                 //startActivityForResult(intent, EDIT_REQUEST);

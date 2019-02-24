@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import fuad.yousseftech.surf.Firebase.Rank;
+import fuad.yousseftech.surf.Firebase.Web;
+
 import static android.content.ContentValues.TAG;
 
 
@@ -37,12 +40,20 @@ import static android.content.ContentValues.TAG;
  */
 public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder> {
 
-    /** a copy of the list of students in the model */
-    private List<UrlMap> list = new ArrayList<>();
-
     /** a listener for a touch event on the student */
     private OnLinkClickListener listener;
     private OnLinkLongClickListener lListener;
+
+    private Map<String, Web> webMap;
+    private String key;
+
+    public void setWebMap(Map webMap) {
+        this.webMap = webMap;
+    }
+
+    public void setWeb(String key) {
+        this.key = key;
+    }
 
     @NonNull
     @Override
@@ -55,24 +66,21 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
         return new LinkViewHolder(itemView);
     }
 
-    public List<UrlMap> getList() {
-        return list;
-    }
-
     @Override
     public void onBindViewHolder(@NonNull LinkViewHolder holder, int position) {
 
-        //bind the student data for one student
-        UrlMap urlmap = list.get(position);
-        String link = urlmap.getLink();
+        Web web = webMap.get(key);
+        List<Rank> ranks = web.getRanks();
+        Rank rank = ranks.get(position);
+        Web futureWeb = webMap.get(rank.getWeb());
 
         //Log.d("APP", "Binding: " + position + " " + linkList.get(position));
 
         //holder.studentMajor.setText("to Replace");
-        holder.linkText.setText(urlmap.getTitle());
+        holder.linkText.setText(futureWeb.getTitle());
         holder.webIcon.setImageResource(R.mipmap.computerscreen);
         try {
-            Bitmap bmp = urlmap.getBitmap();
+            Bitmap bmp = futureWeb.getBitmap();
             holder.webIcon.setImageBitmap(bmp);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -85,10 +93,15 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (webMap == null)
+            return 0;
+        Web web = webMap.get(key);
+        List<Rank> ranks = web.getRanks();
+        return ranks.size();
     }
 
     /**
+     *
      * This is a holder for the widgets associated with a single entry in the list of students
      */
     class LinkViewHolder extends RecyclerView.ViewHolder {
@@ -109,8 +122,12 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
                     int position = getAdapterPosition();
 
                     if (listener != null && position != RecyclerView.NO_POSITION) {
-                        UrlMap urlmap = list.get(position);
-                        String link = urlmap.getLink();
+                        Web web = webMap.get(key);
+                        List<Rank> ranks = web.getRanks();
+                        Rank rank = ranks.get(position);
+                        Web futureWeb = webMap.get(rank.getWeb());
+
+                        String link = futureWeb.getLink();
                         listener.onLinkClicked(link);
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
                         view.getContext().startActivity(browserIntent);
