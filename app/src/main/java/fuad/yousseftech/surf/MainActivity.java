@@ -23,14 +23,17 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private LinkAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+
     List<String> myLinks = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myLinks.add("http://www.google.com");
-        myLinks.add("http://www.youtube.com");
-        myLinks.add("http://www.facebook.com");
+        myLinks.add("https://www.youtube.com/channel/UC4D2LtazNIrhIPJKLs8KqUA");
+        myLinks.add("http://www.facebook.com/parkjs814");
+        myLinks.add("https://www.instagram.com/magnumphotos");
+        myLinks.add("https://github.com/orgs/surf-plugin");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.link_recycler_view);
         // use this setting to improve performance if you know that changes

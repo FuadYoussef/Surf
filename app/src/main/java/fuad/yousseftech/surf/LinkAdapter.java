@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -61,7 +65,7 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
         Log.d("APP", "Binding: " + position + " " + linkList.get(position));
 
         //holder.studentMajor.setText("to Replace");
-        holder.linkText.setText(link);
+        holder.linkText.setText(makeTitleFromURL(link));
         if(link.contains("facebook")) {
             //holder.webIcon.setBackground(mipmap.facebook);
            holder.webIcon.setBackgroundResource(R.mipmap.facebook);
@@ -141,6 +145,31 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
         }
     }
+    private String makeTitleFromURL(String url){
+        String workingString = "";
+        String workP1 = "";
+        String workP2 = "";
+        String workLetter1 = "";
+        String workLetter2 = "";
+        if (url.contains("/")) {
+            workingString = url.substring(url.lastIndexOf("/") + 1);
+            for (int i = 0; i < workingString.length(); i++) {
+                if (Character.isUpperCase(workingString.charAt(i))) {
+
+                        workP1 = workingString.substring(0, i);
+
+
+                        workP2 = workLetter2 + workingString.substring(i);
+
+                    workingString = workP1 + workP2;
+                    return workingString;
+                }
+            }
+        } else {
+            workingString = url.substring(url.indexOf("."), url.indexOf(".", url.indexOf(".") +1) -1);
+        }
+        return workingString;
+    }
 
     public interface OnLinkClickListener {
         void onLinkClicked(String link);
@@ -151,5 +180,7 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
     public void setOnLinkClickListener(OnLinkClickListener listener) {
         this.listener = listener;
     }
+
+
 
 }
