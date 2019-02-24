@@ -71,13 +71,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot data: dataSnapshot.getChildren()) {
-                    String encodedLink = data.getKey();
-                    byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedLink);
-                    String link = new String(decodedBytes, StandardCharsets.UTF_8);
+                    String encodedKey = data.getKey();
+                    int key = Integer.parseInt(encodedKey);
+                    //byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedLink);
+                    //String link = new String(decodedBytes, StandardCharsets.UTF_8);
                     //Log.i("db", link);
 
                     Map<String, String> map = (HashMap<String, String>) data.getValue();
-                    urlMapList.add(new UrlMap(link, map));
+                    if(key >= urlMapList.size())
+                        urlMapList.add(new UrlMap(map));
+                    else
+                        urlMapList.get(key).setMap(map);
                     mAdapter.notifyDataSetChanged();
                     //String num = datas.child("1").getValue().toString();
                 }

@@ -11,24 +11,34 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
 
 public class UrlMap {
-    private String link;
     private Map<String, String> map;
     public static Map<String, Bitmap> bitmapMap = new HashMap<>();
 
-    public UrlMap(String link, Map<String, String> map) {
-        this.link = link;
+    public UrlMap(Map<String, String> map) {
         this.map = map;
     }
 
     public String getLink() {
-        return link;
+        return map.get("url");
     }
 
-    public Map<String, String> getMap() {
-        return map;
+    public String getTitle() {
+        return map.get("title");
+    }
+
+    public String getDescription() {
+        return map.get("description");
+    }
+
+    public String getfavicon() {
+        String link = map.get("favicon");
+        return link.replaceFirst("http://", "https://");
+    }
+
+    public void setMap(Map<String, String> map) {
+        this.map = map;
     }
 
     private static class DownloadBitmapTask extends AsyncTask<String, Void, Bitmap> {
@@ -45,6 +55,7 @@ public class UrlMap {
                 try {
                     URL url = new URL(link);
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setInstanceFollowRedirects(true);
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
@@ -64,7 +75,7 @@ public class UrlMap {
     }
 
     public Bitmap getBitmap() throws ExecutionException, InterruptedException {
-        String link = map.get("favicon");
+        String link = getfavicon();
         return new DownloadBitmapTask().execute(link).get();
     }
 

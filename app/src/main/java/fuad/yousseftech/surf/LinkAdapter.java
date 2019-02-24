@@ -65,12 +65,12 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
         //bind the student data for one student
         UrlMap urlmap = list.get(position);
         String link = urlmap.getLink();
-        Map<String, String> map = urlmap.getMap();
 
         //Log.d("APP", "Binding: " + position + " " + linkList.get(position));
 
         //holder.studentMajor.setText("to Replace");
-        holder.linkText.setText(map.get("title"));
+        holder.linkText.setText(urlmap.getTitle());
+        holder.webIcon.setImageResource(R.mipmap.computerscreen);
         try {
             Bitmap bmp = urlmap.getBitmap();
             holder.webIcon.setImageBitmap(bmp);
