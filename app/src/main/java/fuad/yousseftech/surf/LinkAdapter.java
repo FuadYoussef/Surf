@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -77,7 +80,12 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
         //Log.d("APP", "Binding: " + position + " " + linkList.get(position));
 
         //holder.studentMajor.setText("to Replace");
-        holder.linkText.setText(futureWeb.getTitle());
+        String shortTitle = futureWeb.getTitle();
+        if (shortTitle.length() > 45)
+            shortTitle = shortTitle.substring(0, 42) + "...";
+        String sourceText = "<b>" + shortTitle + "</b>";
+
+        holder.linkText.setText(Html.fromHtml(sourceText));
         holder.webIcon.setImageResource(R.mipmap.computerscreen);
         try {
             Bitmap bmp = futureWeb.getBitmap();

@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -27,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -44,6 +47,17 @@ public class MainActivity extends AppCompatActivity
     private TextView currentLinkView;
     private Map<String, Web> webMap = new HashMap<>();
     private String currentId;
+
+    public static String getDomainName(String url) {
+        try {
+            URI uri = new URI(url);
+            String domain = uri.getHost();
+            return domain.startsWith("www.") ? domain.substring(4) : domain;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +79,13 @@ public class MainActivity extends AppCompatActivity
 
                 currentLinkView = (TextView) findViewById(R.id.currentLinkContent);
                 Web currentWeb = webMap.get(currentId);
-                currentLinkView.setText(currentWeb.getTitle());
+                String shortTitle = currentWeb.getTitle();
+                if (shortTitle.length() > 45)
+                    shortTitle = shortTitle.substring(0, 42) + "...";
+                String shortUrl = getDomainName(currentWeb.getLink());
+                String sourceText = "<b>" + shortTitle + "</b><br /><small>"
+                        + shortUrl + "</small>";
+                currentLinkView.setText(Html.fromHtml(sourceText));
 
                 mAdapter.notifyDataSetChanged();
             }
