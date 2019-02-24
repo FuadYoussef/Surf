@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myLinks.add("test");
-        myLinks.add("test1");
-        myLinks.add("test2");
+        myLinks.add("http://www.google.com");
+        myLinks.add("http://www.youtube.com");
+        myLinks.add("http://www.facebook.com");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.link_recycler_view);
         // use this setting to improve performance if you know that changes
@@ -121,5 +121,8 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void computerLink(View view) {
     }
 }

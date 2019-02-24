@@ -1,13 +1,15 @@
 package fuad.yousseftech.surf;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
     /** a listener for a touch event on the student */
     private OnLinkClickListener listener;
+    private OnLinkLongClickListener lListener;
 
     @NonNull
     @Override
@@ -46,8 +49,8 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
         Log.d("APP", "Binding: " + position + " " + linkList.get(position));
 
-        holder.studentMajor.setText("to Replace");
-        holder.studentName.setText(link);
+        //holder.studentMajor.setText("to Replace");
+        holder.linkText.setText(link);
 
     }
 
@@ -63,15 +66,15 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
      * This is a holder for the widgets associated with a single entry in the list of students
      */
     class LinkViewHolder extends RecyclerView.ViewHolder {
-        private TextView studentName;
-        private TextView studentMajor;
+        private TextView linkText;
+        private ImageView webIcon;
 
 
 
         public LinkViewHolder(@NonNull View itemView) {
             super(itemView);
-            studentName = itemView.findViewById(R.id.text_student_name);
-            studentMajor = itemView.findViewById(R.id.text_student_major);
+            linkText = itemView.findViewById(R.id.linkURL);
+            webIcon = itemView.findViewById(R.id.websiteIcon);
 
             itemView.setOnClickListener(new View.OnClickListener() {
 
@@ -81,9 +84,27 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
                     if (listener != null && position != RecyclerView.NO_POSITION) {
                         listener.onLinkClicked(linkList.get(position));
+                        String url = linkList.get(position);
+                        System.out.println("Clicked on URL: " + url);
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        view.getContext().startActivity(browserIntent);
                     }
                 }
             });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+
+                    if (lListener != null && position != RecyclerView.NO_POSITION) {
+                        lListener.onLinkLongClicked(position);
+                        System.out.println("long clicked position: " + position);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
 
         }
     }
@@ -91,8 +112,11 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
     public interface OnLinkClickListener {
         void onLinkClicked(String link);
     }
-
+    public interface OnLinkLongClickListener {
+        boolean onLinkLongClicked(int position);
+    }
     public void setOnLinkClickListener(OnLinkClickListener listener) {
         this.listener = listener;
     }
+
 }
