@@ -24,7 +24,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static android.content.ContentValues.TAG;
 
@@ -35,7 +38,7 @@ import static android.content.ContentValues.TAG;
 public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder> {
 
     /** a copy of the list of students in the model */
-    private List<String> linkList = new ArrayList<>();
+    private List<UrlMap> list = new ArrayList<>();
 
     /** a listener for a touch event on the student */
     private OnLinkClickListener listener;
@@ -52,40 +55,29 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
         return new LinkViewHolder(itemView);
     }
 
-    public void setLinkList(List<String>links) {
-        linkList = links;
-        notifyDataSetChanged();
+    public List<UrlMap> getList() {
+        return list;
     }
+
     @Override
     public void onBindViewHolder(@NonNull LinkViewHolder holder, int position) {
 
         //bind the student data for one student
-        String link = linkList.get(position);
+        UrlMap urlmap = list.get(position);
+        String link = urlmap.getLink();
 
-        Log.d("APP", "Binding: " + position + " " + linkList.get(position));
+        //Log.d("APP", "Binding: " + position + " " + linkList.get(position));
 
         //holder.studentMajor.setText("to Replace");
-        holder.linkText.setText(makeTitleFromURL(link));
-        if(link.contains("facebook")) {
-            //holder.webIcon.setBackground(mipmap.facebook);
-           holder.webIcon.setBackgroundResource(R.mipmap.facebook);
-        }
-        else if(link.contains("github")) {
-            holder.webIcon.setBackgroundResource(R.mipmap.github);
-        } else if(link.contains("google")) {
-            holder.webIcon.setBackgroundResource(R.mipmap.google);
-        } else if(link.contains("instagram")) {
-            holder.webIcon.setBackgroundResource(R.mipmap.instagram);
-        } else if(link.contains("reddit")) {
-            holder.webIcon.setBackgroundResource(R.mipmap.reddit);
-        } else if(link.contains("stackoverflow")) {
-            holder.webIcon.setBackgroundResource(R.mipmap.stackoverflow);
-        } else if(link.contains("tumblr")) {
-            holder.webIcon.setBackgroundResource(R.mipmap.tumblr);
-        } /*else if(link.contains("youtube")) {
-            holder.webIcon.setBackgroundResource(R.mipmap.youtube);
-        } */else {
-            holder.webIcon.setBackgroundResource(R.drawable.ic_menu_gallery);
+        holder.linkText.setText(urlmap.getTitle());
+        holder.webIcon.setImageResource(R.mipmap.computerscreen);
+        try {
+            Bitmap bmp = urlmap.getBitmap();
+            holder.webIcon.setImageBitmap(bmp);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
 
@@ -93,11 +85,8 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
     @Override
     public int getItemCount() {
-        return linkList.size();
+        return list.size();
     }
-
-
-
 
     /**
      * This is a holder for the widgets associated with a single entry in the list of students
@@ -120,10 +109,10 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
                     int position = getAdapterPosition();
 
                     if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onLinkClicked(linkList.get(position));
-                        String url = linkList.get(position);
-                        System.out.println("Clicked on URL: " + url);
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        UrlMap urlmap = list.get(position);
+                        String link = urlmap.getLink();
+                        listener.onLinkClicked(link);
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
                         view.getContext().startActivity(browserIntent);
                     }
                 }
@@ -135,7 +124,7 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
                     if (lListener != null && position != RecyclerView.NO_POSITION) {
                         lListener.onLinkLongClicked(position);
-                        System.out.println("long clicked position: " + position);
+                        //System.out.println("long clicked position: " + position);
                         return true;
                     }
                     return false;
@@ -144,31 +133,6 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
 
         }
-    }
-    private String makeTitleFromURL(String url){
-        String workingString = "";
-        String workP1 = "";
-        String workP2 = "";
-        String workLetter1 = "";
-        String workLetter2 = "";
-        if (url.contains("/")) {
-            workingString = url.substring(url.lastIndexOf("/") + 1);
-            for (int i = 0; i < workingString.length(); i++) {
-                if (Character.isUpperCase(workingString.charAt(i))) {
-
-                        workP1 = workingString.substring(0, i);
-
-
-                        workP2 = workLetter2 + workingString.substring(i);
-
-                    workingString = workP1 + workP2;
-                    return workingString;
-                }
-            }
-        } else {
-            workingString = url.substring(url.indexOf("."), url.indexOf(".", url.indexOf(".") +1) -1);
-        }
-        return workingString;
     }
 
     public interface OnLinkClickListener {

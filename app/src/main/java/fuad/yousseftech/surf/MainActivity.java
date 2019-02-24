@@ -28,7 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,48 +38,17 @@ public class MainActivity extends AppCompatActivity
     private LinkAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    List<String> myLinks = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference();
-        //myLinks.add(ref.getKey());
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Log.i("db", dataSnapshot.toString());
-                for(DataSnapshot data: dataSnapshot.getChildren()) {
-                    //Log.i("db", data.toString());
-                    String encodedLink = data.getKey();
-                    //Log.i("db", encodedLink);
-
-
-                    byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedLink);
-                    String link = new String(decodedBytes, StandardCharsets.UTF_8);
-                    //Log.i("db", link);
-                    myLinks.add(link);
-                    mAdapter.notifyDataSetChanged();
-                    //String num = datas.child("1").getValue().toString();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        //Log.i("db", ref.child().toString());
-
-        myLinks.add("http://www.google.com");
+        /*myLinks.add("http://www.google.com");
         myLinks.add("https://www.youtube.com/channel/UC4D2LtazNIrhIPJKLs8KqUA");
         myLinks.add("http://www.facebook.com/parkjs814");
         myLinks.add("https://www.instagram.com/magnumphotos");
-        myLinks.add("https://github.com/orgs/surf-plugin");
+        myLinks.add("https://github.com/orgs/surf-plugin");*/
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.link_recycler_view);
         // use this setting to improve performance if you know that changes
@@ -90,9 +61,38 @@ public class MainActivity extends AppCompatActivity
 
         // specify an adapter (see also next example)
         mAdapter = new LinkAdapter();
+        final List<UrlMap> urlMapList = mAdapter.getList();
         recyclerView.setAdapter(mAdapter);
         setSupportActionBar(toolbar);
 
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference();
+        //myLinks.add(ref.getKey());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot data: dataSnapshot.getChildren()) {
+                    String encodedKey = data.getKey();
+                    int key = Integer.parseInt(encodedKey);
+                    //byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedLink);
+                    //String link = new String(decodedBytes, StandardCharsets.UTF_8);
+                    //Log.i("db", link);
+
+                    Map<String, String> map = (HashMap<String, String>) data.getValue();
+                    if(key >= urlMapList.size())
+                        urlMapList.add(new UrlMap(map));
+                    else
+                        urlMapList.get(key).setMap(map);
+                    mAdapter.notifyDataSetChanged();
+                    //String num = datas.child("1").getValue().toString();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        mAdapter.setLinkList(myLinks);
+        //mAdapter.setLinkList(myLinks);
 
         mAdapter.setOnLinkClickListener(new LinkAdapter.OnLinkClickListener() {
             @Override
