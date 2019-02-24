@@ -1,6 +1,8 @@
 package fuad.yousseftech.surf;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,8 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -51,6 +62,28 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
 
         //holder.studentMajor.setText("to Replace");
         holder.linkText.setText(link);
+        if(link.contains("facebook")) {
+            //holder.webIcon.setBackground(mipmap.facebook);
+           holder.webIcon.setBackgroundResource(R.mipmap.facebook);
+        }
+        else if(link.contains("github")) {
+            holder.webIcon.setBackgroundResource(R.mipmap.github);
+        } else if(link.contains("google")) {
+            holder.webIcon.setBackgroundResource(R.mipmap.google);
+        } else if(link.contains("instagram")) {
+            holder.webIcon.setBackgroundResource(R.mipmap.instagram);
+        } else if(link.contains("reddit")) {
+            holder.webIcon.setBackgroundResource(R.mipmap.reddit);
+        } else if(link.contains("stackoverflow")) {
+            holder.webIcon.setBackgroundResource(R.mipmap.stackoverflow);
+        } else if(link.contains("tumblr")) {
+            holder.webIcon.setBackgroundResource(R.mipmap.tumblr);
+        } else if(link.contains("youtube")) {
+            holder.webIcon.setBackgroundResource(R.mipmap.youtube);
+        } else {
+            holder.webIcon.setBackgroundResource(R.drawable.ic_menu_gallery);
+        }
+
 
     }
 

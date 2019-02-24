@@ -29,7 +29,7 @@
             android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:paddingEnd="8dp"
-            android:src="@drawable/ic_menu_gallery" />
+          />
         <ImageView
             android:id="@+id/openComputerIcon"
             android:layout_width="30dp"
