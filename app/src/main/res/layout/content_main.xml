@@ -7,9 +7,25 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
-
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Current Desktop Link: "
+        android:layout_alignParentTop="true"
+        android:padding="18dp"
+        android:id="@+id/currentLinkLabel"/>
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="55dp"
+        android:text="No Current Link"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/currentLinkLabel"
+        android:padding="18dp"
+        android:onClick="openCurrentLink"
+        android:id="@+id/currentLinkContent"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/link_recycler_view"
+        android:layout_below="@id/currentLinkLabel"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

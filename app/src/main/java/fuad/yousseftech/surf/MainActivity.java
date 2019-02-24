@@ -1,6 +1,7 @@
 package fuad.yousseftech.surf;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -39,9 +41,9 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private LinkAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-
+    private TextView currentLinkView;
     private Map<String, Web> webMap = new HashMap<>();
-
+    private String currentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String currentId = (String) dataSnapshot.child("currentId").getValue();
+                currentId = (String) dataSnapshot.child("currentId").getValue();
                 String currentUrl = (String) dataSnapshot.child("currentUrl").getValue();
                 //Log.i("currentId", currentId);
                 //Log.i("currentUrl", currentUrl);
@@ -67,6 +69,11 @@ public class MainActivity extends AppCompatActivity
                     webMap.put(key, new Web(val));
                 }
                 mAdapter.setWebMap(webMap);
+                currentLinkView = (TextView) findViewById(R.id.currentLinkContent);
+                Web currentWeb = webMap.get(currentId);
+                currentLinkView.setText(currentWeb.getTitle());
+                //currentWeb.getLink();
+
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.link_recycler_view);
+
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -173,5 +181,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void computerLink(View view) {
+    }
+
+    public void openCurrentLink(View view) {
+        if(currentId != null && currentId != "") {
+            Web currentWeb = webMap.get(currentId);
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentWeb.getLink()));
+            view.getContext().startActivity(browserIntent);
+        }
+
     }
 }
