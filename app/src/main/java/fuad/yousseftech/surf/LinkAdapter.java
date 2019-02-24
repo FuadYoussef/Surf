@@ -82,9 +82,9 @@ public class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder
             holder.webIcon.setBackgroundResource(R.mipmap.stackoverflow);
         } else if(link.contains("tumblr")) {
             holder.webIcon.setBackgroundResource(R.mipmap.tumblr);
-        } else if(link.contains("youtube")) {
+        } /*else if(link.contains("youtube")) {
             holder.webIcon.setBackgroundResource(R.mipmap.youtube);
-        } else {
+        } */else {
             holder.webIcon.setBackgroundResource(R.drawable.ic_menu_gallery);
         }
 
