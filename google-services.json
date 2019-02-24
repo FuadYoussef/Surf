@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "875763902595",
+    "firebase_url": "https://surf-4fabd.firebaseio.com",
+    "project_id": "surf-4fabd",
+    "storage_bucket": "surf-4fabd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875763902595:android:5c8e77d93b9971ec",
+        "android_client_info": {
+          "package_name": "fuad.yousseftech.surf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875763902595-rcd2fsf2qjb99rkgdbrkjuchishlqcqa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "fuad.yousseftech.surf",
+            "certificate_hash": "3f6101b2b9a61439cd43c017cf541fa322ff31d8"
+          }
+        },
+        {
+          "client_id": "875763902595-6v11ec0asn75aorib6hj1vgk4ccs5al0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpCQ23YM2UJBWuYYN4vFawWo6BOmPaqgE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875763902595-6v11ec0asn75aorib6hj1vgk4ccs5al0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
