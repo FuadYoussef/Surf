@@ -8,4 +8,7 @@
     <string name="action_settings">Settings</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="infocontent">This Companion App for the Surf Chrome Plugin is meant to provide users with access to their most used websites
+    as well as provide an insight into their own data.\nDeveloped by the team of:\nFuad Youssef, Jude Rosen, Kevin Park, and Jason Park
+    for HackCU V</string>
 </resources>

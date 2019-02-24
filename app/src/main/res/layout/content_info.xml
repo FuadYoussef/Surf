@@ -10,9 +10,14 @@
 
     <TextView
         android:id="@+id/infoText"
-        android:text="App developed by the team of Fuad Youssef, Jude Rosen, Jason Park, and Kevin Park for Hack CUv"
+        android:text="@string/infocontent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:padding="18dp"
+        android:fontFamily="roboto"
+        android:textSize="16dp"
+        android:textColor="#000000"/>
 
 </RelativeLayout>
